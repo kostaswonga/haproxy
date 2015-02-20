@@ -2,7 +2,7 @@
 # Cookbook Name:: haproxy
 # Recipe:: app_lb
 #
-# Copyright 2011, Opscode, Inc.
+# Copyright 2011, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,6 +40,9 @@ pool_members.map! do |member|
   {:ipaddress => server_ip, :hostname => member['hostname']}
 end
 
+pool_members.sort! do |a,b|
+  a[:hostname].downcase <=> b[:hostname].downcase
+end
 
 pool = ["options httpchk #{node['haproxy']['httpchk']}"] if node['haproxy']['httpchk']
 servers = pool_members.uniq.map do |s|
